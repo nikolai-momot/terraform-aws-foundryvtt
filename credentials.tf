@@ -13,7 +13,9 @@ data "aws_iam_policy_document" "foundry_server_kms_key" {
       "kms:Put*",
       "kms:Revoke*",
       "kms:ScheduleKeyDeletion",
-      "kms:Update*"
+      "kms:Update*",
+      "kms:Encrypt",
+      "kms:Decrypt"
     ]
     resources = ["*"]
     principals {

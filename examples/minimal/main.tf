@@ -8,5 +8,5 @@ module "foundry_server_minimal_example" {
 }
 
 output endpoint {
-  value = module.foundry_server.lb_dns_name
+  value = module.foundry_server_minimal_example.lb_dns_name
 }

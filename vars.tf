@@ -7,7 +7,7 @@ locals {
     key   = "purpose"
     value = "foundry-server"
   }
-  tags = length(var.tags) == 0 ? list(local.tag_foundry) : list(local.tag_foundry, var.tags...)
+  tags = length(var.tags) == 0 ? tolist([local.tag_foundry]) : tolist([local.tag_foundry, var.tags[*]])
   tags_rendered = {
     for tag in local.tags :
     tag.key => tag.value
@@ -33,6 +33,12 @@ variable aws_account_id {
 
 variable aws_automation_role_arn {
   description = "The automation role used by Terraform. Gets decrypt/encrypt access to KMS credentials key."
+  type        = string
+}
+
+variable aws_certificate_arn {
+  default     = ""
+  description = "The certificate ARN is used for the HTTPS target group"
   type        = string
 }
 

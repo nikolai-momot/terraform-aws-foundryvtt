@@ -21,14 +21,14 @@ locals {
 resource "aws_vpc" "foundry" {
   cidr_block           = var.vpc_cidr_block
   enable_dns_hostnames = true
-  tags                 = merge(local.tags_rendered, map("Name", "foundry-${terraform.workspace}"))
+  tags                 = merge(local.tags_rendered, tomap({"Name" = "foundry-${terraform.workspace}"}))
 }
 
 resource "aws_subnet" "foundry_publics" {
   count             = length(local.subnet_cidrs_public)
   availability_zone = element(local.server_availability_zones, count.index)
   cidr_block        = element(local.subnet_cidrs_public, count.index)
-  tags              = merge(local.tags_rendered, map("Name", format("foundry-public-%d-${terraform.workspace}", count.index)))
+  tags              = merge(local.tags_rendered, tomap({"Name" = format("foundry-public-%d-${terraform.workspace}", count.index)}))
   vpc_id            = aws_vpc.foundry.id
 }
 
@@ -36,18 +36,18 @@ resource "aws_subnet" "foundry_privates" {
   count             = length(local.subnet_cidrs_private)
   availability_zone = element(local.server_availability_zones, count.index)
   cidr_block        = element(local.subnet_cidrs_private, count.index)
-  tags              = merge(local.tags_rendered, map("Name", format("foundry-private-%d-${terraform.workspace}", count.index)))
+  tags              = merge(local.tags_rendered, tomap({"Name" = format("foundry-private-%d-${terraform.workspace}", count.index)}))
   vpc_id            = aws_vpc.foundry.id
 }
 
 resource "aws_route_table" "foundry_public" {
   vpc_id = aws_vpc.foundry.id
-  tags   = merge(local.tags_rendered, map("Name", "foundry-public-${terraform.workspace}"))
+  tags   = merge(local.tags_rendered, tomap({"Name" = "foundry-public-${terraform.workspace}"}))
 }
 
 resource "aws_route_table" "foundry_private" {
   vpc_id = aws_vpc.foundry.id
-  tags   = merge(local.tags_rendered, map("Name", "foundry-private-${terraform.workspace}"))
+  tags   = merge(local.tags_rendered, tomap({"Name" = "foundry-private-${terraform.workspace}"}))
 }
 
 resource "aws_route_table_association" "public_table" {
@@ -64,17 +64,17 @@ resource "aws_route_table_association" "private_table" {
 
 resource "aws_internet_gateway" "foundry" {
   vpc_id = aws_vpc.foundry.id
-  tags   = merge(local.tags_rendered, map("Name", "foundry-gateway-${terraform.workspace}"))
+  tags   = merge(local.tags_rendered, tomap({"Name" = "foundry-gateway-${terraform.workspace}"}))
 }
 
 resource "aws_nat_gateway" "foundry" {
   allocation_id = aws_eip.nat.id
   subnet_id     = element(aws_subnet.foundry_publics.*.id, 0)
-  tags          = merge(local.tags_rendered, map("Name", "foundry-nat-${terraform.workspace}"))
+  tags          = merge(local.tags_rendered, tomap({"Name" = "foundry-nat-${terraform.workspace}"}))
 }
 
 resource "aws_eip" "nat" {
-  tags = merge(local.tags_rendered, map("Name", "foundry-nat-${terraform.workspace}"))
+  tags = merge(local.tags_rendered, tomap({"Name" = "foundry-nat-${terraform.workspace}"}))
   vpc  = true
 }
 

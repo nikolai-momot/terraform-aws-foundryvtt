@@ -1,7 +1,6 @@
 resource "aws_s3_bucket" "foundry_artifacts" {
   acl           = var.artifacts_bucket_public ? "public-read" : "private"
   bucket_prefix = "foundry-server-artifacts-${terraform.workspace}"
-  region        = local.region
   tags          = local.tags_rendered
 
   dynamic "cors_rule" {

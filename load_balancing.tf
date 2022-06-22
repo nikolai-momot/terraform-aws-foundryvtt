@@ -85,15 +85,17 @@ resource "aws_lb_listener" "foundry_server_http" {
 }
 
 # resource "aws_lb_listener" "foundry_server_https" {
+#   count = var.aws_certificate_arn != "" ? 1 : 0
+
 #   load_balancer_arn = aws_lb.foundry_server.arn
 #   port              = aws_security_group_rule.lb_allow_inbound_443.from_port
-#   protocol          = aws_lb_target_group.foundry_server_https.protocol
+#   protocol          = aws_lb_target_group.lb_foundry_server_https.protocol
 #   ssl_policy        = "ELBSecurityPolicy-2016-08"
-#   certificate_arn   = "arn:aws:iam::187416307283:server-certificate/test_cert_rab3wuqwgja25ct3n4jdj2tzu4"
+#   certificate_arn   = var.aws_certificate_arn
 
 #   default_action {
 #     type             = "forward"
-#     target_group_arn = aws_lb_target_group.foundry_server_https.arn
+#     target_group_arn = aws_lb_target_group.lb_foundry_server_https.arn
 #   }
 # }
 
